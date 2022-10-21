@@ -36,21 +36,41 @@ public class InvoiceGeneratorTest {
         Assert.assertEquals(expectedSummary,invoiceSummary);
     }
     @Test
-    public void givenDistanceAndTime_shouldReturnInvoice(){
-        HashMap<Integer,Ride[]> rideRepo = new HashMap<>();
-        Ride[] rides1 ={new Ride(2.0,5),new Ride(0.1,1)};
-        Ride[] rides2 ={new Ride(10.0,2),new Ride(5.0,1)};
-        Ride[] rides3 ={new Ride(7.0,3),new Ride(5.0,1)};
-        Ride[] rides4 ={new Ride(4.0,3),new Ride(5.0,4)};
-        rideRepo.put(1,rides1);
-        rideRepo.put(2,rides2);
-        rideRepo.put(3,rides3);
-        rideRepo.put(4,rides4);
+    public void givenDistanceAndTime_shouldReturnInvoice() {
+        HashMap<Integer, Ride[]> rideRepo = new HashMap<>();
+        Ride[] rides1 = {new Ride(2.0, 5), new Ride(0.1, 1)};
+        Ride[] rides2 = {new Ride(10.0, 2), new Ride(5.0, 1)};
+        Ride[] rides3 = {new Ride(7.0, 3), new Ride(5.0, 1)};
+        Ride[] rides4 = {new Ride(4.0, 3), new Ride(5.0, 4)};
+        rideRepo.put(1, rides1);
+        rideRepo.put(2, rides2);
+        rideRepo.put(3, rides3);
+        rideRepo.put(4, rides4);
         int userID = 1;
-        RideRepository rideRepository = new RideRepository(rideRepo,userID);
+        RideRepository rideRepository = new RideRepository(rideRepo, userID);
         InvoiceSummary invoiceSummary = rideRepository.calculateFare();
-        InvoiceSummary expectedSummary = new InvoiceSummary(2,30.0);
+        InvoiceSummary expectedSummary = new InvoiceSummary(2, 30.0);
         Assert.assertEquals(expectedSummary, invoiceSummary);
 
+    }
+    @Test
+    public void givenMultipleRides_whenGivenWithCategories_shouldReturnInvoiceAccordingToType() {
+    Ride[] rides = {new Ride(2.0 , 5) , new Ride(5.0 , 8)};
+
+    String category = "Premium";
+
+    if(category == "Premium") {
+        PrimiumRides premiumInvoice = new PrimiumRides();
+
+        InvoiceSummary premiumInvoiceSummary = premiumInvoice.calculateFare(rides);
+        InvoiceSummary expectedPremiumInvoiceSummary = new InvoiceSummary(2, 131.0);
+        Assert.assertEquals(expectedPremiumInvoiceSummary, premiumInvoiceSummary);
+    }
+    else {
+        InvoiceSummary invoiceSummary = invoiceGenerator.calculateFare(rides);
+        InvoiceSummary expectedInvoiceSummary = new InvoiceSummary(2, 30.0);
+        Assert.assertEquals(expectedInvoiceSummary, invoiceSummary);
+    }
 }
+
 }
